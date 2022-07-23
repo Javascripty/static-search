@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>staticsearch.com</title>
+
+    <style>
+        html, body {
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            font-family: "Inter";
+        }
+    </style>
+    <link rel="stylesheet" href="static-search.css">
+</head>
+<body>
+
+    <form class="static-search-form" role="search">
+        <section class="static-search-bar">
+            <input class="static-search-query" 
+                    type="search" 
+                    placeholder="Type your search query here." 
+                    aria-label="Search through site content" 
+                    required>
+            <button class="static-search-button" type="button">Search</button>
+        </section>
+    </form>
+
+    <script src="static-search.js"></script>
+    <script>
+
+        // Matching search results template
+        let template = function(match) {
+            return`<li class="result-item">
+                <a class="result-item-title" href="${match.url}">${match.title}</a>
+                <p class="result-item-author">${match.author}</p>
+            </li>`;
+        };
+
+        let websiteSearch = new StaticSearch({
+            pathToTheSearchableData: "searchable-data.json",
+            searchResultsTemplate: template,
+        });
+    </script>
+</body>
+</html>

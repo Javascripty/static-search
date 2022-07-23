@@ -1,0 +1,186 @@
+html, body {
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    /* align-items: center; */
+    font-family: "Inter";
+}
+
+/* Module Styles. */
+#static-search-form {
+    width: 90%;
+    max-width: 420px;
+    position: absolute;
+    margin: 64px 0 0;
+}
+
+/* Sub-module Styles. */
+#search-bar {
+    display: flex;
+    justify-content: space-between;
+    box-sizing: border-box;
+}
+
+#static-search-query {
+    display: block;
+    width: 68%;
+    text-indent: 0.5rem;
+    border: solid 3px black;
+    border-radius: 3px;
+    font-size: 1rem;
+}
+
+#search-button {
+    height: 55px;
+    width: 27%;
+    border: solid 3px black;
+    border-radius: 3px;
+    font-size: 1rem;
+    letter-spacing: 0.02rem;
+}
+
+/* Results component styles. */
+#result {
+    max-height: 500px;
+    width: 100%;
+    position: absolute;
+    overflow: auto;
+    /* background: #EEE; */
+    box-sizing: border-box;
+    border: solid 3px black;
+    border-radius: 0.2rem;
+    padding: 0;
+    margin: 0.5rem 0 0;
+    list-style: none;
+    scrollbar-width: thin;
+}
+
+.search-results-category {
+    display: flex;
+    align-items: center;
+    height: 50px;
+    background: #ededed;
+    color: #333;
+    border-bottom: solid 3px black;
+}
+
+.search-results-category-title {
+    width: 90%;
+    margin: 0 auto;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.result-item {
+    box-sizing: border-box;
+    padding: 1.25rem 0;
+    border-bottom: solid 3px black;
+}
+
+.result-item-noresults {
+    width: 90%;
+    margin: 0 auto;
+    padding: 1rem 0;
+    box-sizing: border-box;
+    line-height: 1.65rem;
+    background: #E9E9E9;
+}
+
+.result-item-title {
+    display: block;
+    width: 90%;
+    margin: 0 auto;
+    box-sizing: border-box;
+    /* color: black; */
+    /* text-decoration: none; */
+    font-size: 1rem;
+    /* font-weight: 600; */
+    line-height: 1.5rem;
+}
+
+.result-item-author {
+    display: block;
+    width: 90%;
+    margin: 0.5rem auto 0;
+    box-sizing: border-box;
+    color: #666;
+    /* font-style: italic; */
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.5;
+}
+
+/* <autocomplete> component styles. */
+#autocomplete {
+    width: 100%;
+    position: absolute;
+    padding: 0;
+    list-style: none;
+    border: solid 3px #333;
+    border-radius: 3px;
+}
+
+.autocomplete-item {
+    height: 50px;
+    display: flex;
+    align-items: center;
+}
+
+.autocomplete-item-button {
+    width: 100%;
+    height: 100%;
+    text-align: left;
+    border: solid 2px #ededed;
+    letter-spacing: 0.5px;
+}
+
+/* staticsearch.io logo. */
+#logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: sticky;
+    bottom: 0;
+    background: black;
+    height: 50px;
+    border-top: solid 3px black;
+    color: #EEE;
+}
+
+#logo a {
+    color: #EEE;
+    letter-spacing: 0.006rem;
+    font-weight: 600;
+}
+
+
+/* sub-component styling. */
+#subcomponent {
+    list-style-type: none;
+    padding: 0;
+}
+
+
+#no-results-found {
+    text-indent: 1rem;
+}
+
+/* .is-active {
+    background: black;
+    color: white;
+    border: none;
+} */
+
+.autocomplete-item-button:focus {
+    background: black;
+    color: white;
+    border: none;
+}
+
+.autocomplete-item-button:hover {
+    background: green;
+    color: white;
+    border: none;
+}

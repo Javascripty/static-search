@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>staticsearch.com</title>
+
+    <link rel="stylesheet" href="css/static-search.css">
+</head>
+<body>
+
+    <form id="static-search-form" role="search">
+        <section id="search-bar">
+            <input id="static-search-query" type="search" placeholder="Type your search query here." aria-label="Search through site content" required>
+            <button id="search-button" type="button">Search</button>
+        </section>
+    </form>
+
+    <script src="staticsearch/class.js"></script>
+    <script>
+
+        /**
+         * Search results markup template.
+         * @param {Array} matches. Either an array of objects, or an empty array.
+         * @return {String} template. A string containing the ui markup.
+         */
+        let searchResultsTemplate = function (matches) {
+
+        let subcomponent = document.createElement('ul');
+        subcomponent.setAttribute('id', 'subcomponent');
+
+        // Loop through the array of objects, and create a <li> element for each object.
+        matches.forEach(function (object) {
+
+            // Create a list item element.
+            let item = document.createElement('li');
+            item.setAttribute('class', 'result-item')
+
+            // Create the title markup.
+            let title = document.createElement('a');
+
+            // give the title element a class.
+            title.setAttribute('class', 'result-item-title');
+
+            // set href attribute.
+            title.setAttribute('href', object.url);
+
+            // set title text.
+            title.innerText = object.title;
+
+            // add title to the list item.
+            item.append(title);
+
+
+            // Create the author markup.
+            let author = document.createElement('p');
+
+            // set class for description markup.
+            author.setAttribute('class', 'result-item-author');
+
+            // set href attribute.
+            // description.setAttribute('href', object.url);
+
+            // set innerText for the description markup with a character maximum of 100.
+            // description.innerText = object.description.slice(0, 100);
+            author.innerText = object.author;
+
+            // add the description markup to the list element markup.
+            item.append(author);
+
+
+            // add the created list item markup into the component markup.
+            subcomponent.append(item);
+
+        });
+
+        return subcomponent;
+        };
+
+        let websiteSearch = new StaticSearch({
+        pathToTheSearchableData: "./data/json/searchable-data.json",
+        searchResultsTemplate,
+        });
+    </script>
+</body>
+</html>
