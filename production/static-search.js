@@ -1,3 +1,9 @@
+/**
+ * Creates a new StaticSearch instance.
+ * @class
+ * @author Eduardo Javier Uribe.
+ * @version 1.0.0
+ */
 class StaticSearch {
 
     // Private field declarations

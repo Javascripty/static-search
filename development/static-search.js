@@ -1,7 +1,7 @@
 /**
  * Creates a new StaticSearch instance.
  * @class
- * @author Eduardo Javier Uribe <ed2711uribe@gmail.com>
+ * @author Eduardo Javier Uribe.
  * @version 1.0.0
  */
 class StaticSearch {
@@ -148,9 +148,9 @@ class StaticSearch {
 
                 results.innerHTML = content;
 
-                // Insert the static search logo?
                 if (this.#settings.showStaticSearchLogo) {
 
+                    // Insert the static search logo.
                     let logo = document.createElement('li');
                     logo.setAttribute('class', 'static-search-logo');
                     logo.innerHTML = `<p>Search provided by <a href="#">static search</a></p>`;
