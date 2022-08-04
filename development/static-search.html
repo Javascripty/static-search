@@ -30,15 +30,13 @@
         </section>
     </form>
 
-    <script src="static-search.js"></script>
+    <script src="./static-search.js"></script>
     <script>
 
         // Matching search results template
         let template = function(match) {
-            return`<li class="result-item">
-                <a class="result-item-title" href="${match.url}">${match.title}</a>
-                <p class="result-item-author">${match.author}</p>
-            </li>`;
+            return `<a class="result-item-title" href="${match.url}">${match.title}</a>
+                    <p class="result-item-author">${match.author}</p>`;
         };
 
         let websiteSearch = new StaticSearch({

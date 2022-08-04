@@ -74,10 +74,13 @@ class StaticSearch {
                 this.#form.removeChild(child);
             }
 
-            /**
-             * comment
-             */
-            let matches = this.#searchableJsonData.filter((object) => {
+            // Process to search for matches:
+
+            // Create a deep-clone of the searchable data.
+            let searchableDataClone = structuredClone(this.#searchableJsonData);
+
+            // Array of objects whose properties match the search query string.
+            let matches = searchableDataClone.filter((object) => {
                 for (let property in object) {
 
                     if (this.#stringMatching({ word: `${this.#input.value}`, string: object[property] })) {
@@ -88,24 +91,20 @@ class StaticSearch {
                 return false;
             });
 
-            /**
-             * Return an array of objects whose properties have been hihglighted.
-             */
-            let modified = matches.map((object) => {
+            if (this.#settings.highlightKeywords) {
+                // Highlight the keywords inside the matching objects.
+                matches.forEach( (object) => {
+                    for (let property in object) {
+                        object[property] = this.#highlight({ string: object[property], keyword: `${this.#input.value}` });
+                    }
+                    
+                    return;
+                });
+            }
 
-                // Copy of the passed object as to not modify the original reference
-                let modified = { ...object };
+            // Process to render the search results:
 
-                for (let property in modified) {
-                    modified[property] = this.#highlight({ string: modified[property], keyword: `${this.#input.value}` });
-                }
-
-                // return a modified object
-                return modified;
-            });
-
-            // Render the results
-            // The element that will hold the provided results template
+            // The component that will hold the returned search results
             let results = document.createElement("ul");
             results.setAttribute('class', 'static-search-result');
 
@@ -118,7 +117,7 @@ class StaticSearch {
                 results.append(logo);
             }
 
-            // If there are no matches
+            // If there are no search matches found:
             if (matches.length <= 0) {
 
                 // The element that will hold the no results found message
@@ -129,24 +128,37 @@ class StaticSearch {
 
                 results.prepend(noresults);
 
-                // Render the no results message
+                // Insert the "no results found" message after the last child of the #form element.
                 return this.#form.append(results);
             } else {
 
-                // The component containing the matching results
-                let subcomponent = document.createElement('ul');
-                subcomponent.setAttribute('class', 'subcomponent');
+                // Process to render the search matches found:
 
-                // The results content
-                let content = modified.map((match) => {
-                    return this.#settings.searchResultsTemplate(match);
+                // Content for the search results found.
+                let content = matches.map((match) => {
+
+                    let li = document.createElement("li");
+                    li.setAttribute("class", "result-item")
+                    li.innerHTML = this.#settings.searchResultsTemplate(match);
+
+                    return li.outerHTML;
+
                 }).join("");
 
-                subcomponent.innerHTML = content;
+                results.innerHTML = content;
 
-                results.prepend(subcomponent);
+                // Insert the static search logo?
+                if (this.#settings.showStaticSearchLogo) {
 
-                // Render the search results
+                    let logo = document.createElement('li');
+                    logo.setAttribute('class', 'static-search-logo');
+                    logo.innerHTML = `<p>Search provided by <a href="#">static search</a></p>`;
+
+                    // Insert the logo after the last child of the results element.
+                    results.append(logo);
+                }
+
+                // Insert the search results component.
                 this.#form.append(results);
             }
         });

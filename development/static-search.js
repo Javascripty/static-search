@@ -1,10 +1,16 @@
+/**
+ * Creates a new StaticSearch instance.
+ * @class
+ * @author Eduardo Javier Uribe <ed2711uribe@gmail.com>
+ * @version 1.0.0
+ */
 class StaticSearch {
 
     // Private field declarations
     #settings;
     #form;
     #input;
-    #searchableJsonData;
+    #searchableData;
 
     // Default search settings
     #defaults = {
@@ -14,7 +20,7 @@ class StaticSearch {
         searchResultsTemplate: undefined,
         noSearchResultsFoundTemplate: `<p class="no-results-found">...Sorry no search results found</p>`,
         showStaticSearchLogo: true,
-        keywordHighlighting: true
+        highlightKeywords: true,
     };
 
     // Define instance properties
@@ -34,7 +40,7 @@ class StaticSearch {
             if (sessionStorage.getItem("searchable-json-data")) {
 
                 // Set the searachable json data
-                this.#searchableJsonData = JSON.parse(sessionStorage.getItem("searchable-json-data"));
+                this.#searchableData = JSON.parse(sessionStorage.getItem("searchable-json-data"));
             }
             else {
 
@@ -49,10 +55,10 @@ class StaticSearch {
                     }
 
                     // Set the searchable data to a private instance field
-                    this.#searchableJsonData = await response.json();
+                    this.#searchableData = await response.json();
 
                     // Save the searchable json data to sessionStorage
-                    sessionStorage.setItem("searchable-json-data", JSON.stringify(this.#searchableJsonData));
+                    sessionStorage.setItem("searchable-json-data", JSON.stringify(this.#searchableData));
                 }
                 catch (error) {
                     console.log(`Sorry couldn't fetch the data:\nError-code: ${error.code}\nError-message: ${error.message}`);
@@ -64,61 +70,55 @@ class StaticSearch {
         // On search form "submit" event
         this.#form.addEventListener("submit", (event) => {
 
-            // prevent default submit behaviour.
+            // Prevent the default "submit" behaviour.
             event.preventDefault();
 
-            // remove any previously rendered <#result> components.
-            let child = document.querySelector(".static-search-result");
+            // Process to remove any previously rendered <.static-search-result> components.
+            let component = document.querySelector(".static-search-result");
 
-            if (child != null) {
-                this.#form.removeChild(child);
+            if (component != null) {
+                this.#form.removeChild(component); 
             }
 
-            /**
-             * comment
-             */
-            let matches = this.#searchableJsonData.filter((object) => {
-                for (let property in object) {
+            
+            // Process to search for matches:
 
-                    if (this.#stringMatching({ word: `${this.#input.value}`, string: object[property] })) {
-                        return true;
+            // Create a deep-clone of the searchable data.
+            let searchableDataClone = structuredClone(this.#searchableData);
+
+            // An array of objects whose properties match the search query string
+            let matches = searchableDataClone.filter((object) => {
+                    for (let property in object) {
+
+                        if (this.#stringMatching({ 
+                            word: `${this.#input.value}`, 
+                            string: object[property] 
+                        })) {
+                            return true;
+                        }
                     }
-                }
-
-                return false;
+    
+                    return false;
             });
 
-            /**
-             * Return an array of objects whose properties have been hihglighted.
-             */
-            let modified = matches.map((object) => {
+            if (this.#settings.highlightKeywords) {
+                // Highlight the keywords inside the matching objects.
+                matches.forEach( (object) => {
+                    for (let property in object) {
+                        object[property] = this.#highlight({ string: object[property], keyword: `${this.#input.value}` });
+                    }
+                    
+                    return;
+                });
+            }
 
-                // Copy of the passed object as to not modify the original reference
-                let modified = { ...object };
+            // Process to render the search results:
 
-                for (let property in modified) {
-                    modified[property] = this.#highlight({ string: modified[property], keyword: `${this.#input.value}` });
-                }
-
-                // return a modified object
-                return modified;
-            });
-
-            // Render the results
-            // The element that will hold the provided results template
+            // The component that will hold the returned search results
             let results = document.createElement("ul");
             results.setAttribute('class', 'static-search-result');
 
-            if (this.#settings.showStaticSearchLogo) {
-                // The StaticSearch logo that displays on the bottom of the search results
-                let logo = document.createElement('li');
-                logo.setAttribute('class', 'static-search-logo');
-                logo.innerHTML = `<p>Search provided by <a href="https://twitter.com/Eduardo__Uribe">static search</a></p>`;
-
-                results.append(logo);
-            }
-
-            // If there are no matches
+            // If there are no search matches found:
             if (matches.length <= 0) {
 
                 // The element that will hold the no results found message
@@ -129,24 +129,37 @@ class StaticSearch {
 
                 results.prepend(noresults);
 
-                // Render the no results message
+                // Insert the "no results found" message after the last child of the #form element.
                 return this.#form.append(results);
             } else {
 
-                // The component containing the matching results
-                let subcomponent = document.createElement('ul');
-                subcomponent.setAttribute('class', 'subcomponent');
+                // Process to render the search matches found:
 
-                // The results content
-                let content = modified.map((match) => {
-                    return this.#settings.searchResultsTemplate(match);
+                // Content for the search results found.
+                let content = matches.map((match) => {
+
+                    let li = document.createElement("li");
+                    li.setAttribute("class", "result-item")
+                    li.innerHTML = this.#settings.searchResultsTemplate(match);
+
+                    return li.outerHTML;
+
                 }).join("");
 
-                subcomponent.innerHTML = content;
+                results.innerHTML = content;
 
-                results.prepend(subcomponent);
+                // Insert the static search logo?
+                if (this.#settings.showStaticSearchLogo) {
 
-                // Render the search results
+                    let logo = document.createElement('li');
+                    logo.setAttribute('class', 'static-search-logo');
+                    logo.innerHTML = `<p>Search provided by <a href="#">static search</a></p>`;
+
+                    // Insert the logo after the last child of the results element.
+                    results.append(logo);
+                }
+
+                // Insert the search results component.
                 this.#form.append(results);
             }
         });
