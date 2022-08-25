@@ -201,3 +201,5 @@ class StaticSearch {
         });
     }
 };
+
+export default StaticSearch;

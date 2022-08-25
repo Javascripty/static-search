@@ -10,7 +10,7 @@ class StaticSearch {
     #settings;
     #form;
     #input;
-    #searchableJsonData;
+    #searchableData;
 
     // Default search settings
     #defaults = {
@@ -20,7 +20,7 @@ class StaticSearch {
         searchResultsTemplate: undefined,
         noSearchResultsFoundTemplate: `<p class="no-results-found">...Sorry no search results found</p>`,
         showStaticSearchLogo: true,
-        keywordHighlighting: true
+        highlightKeywords: true,
     };
 
     // Define instance properties
@@ -40,7 +40,7 @@ class StaticSearch {
             if (sessionStorage.getItem("searchable-json-data")) {
 
                 // Set the searachable json data
-                this.#searchableJsonData = JSON.parse(sessionStorage.getItem("searchable-json-data"));
+                this.#searchableData = JSON.parse(sessionStorage.getItem("searchable-json-data"));
             }
             else {
 
@@ -55,10 +55,10 @@ class StaticSearch {
                     }
 
                     // Set the searchable data to a private instance field
-                    this.#searchableJsonData = await response.json();
+                    this.#searchableData = await response.json();
 
                     // Save the searchable json data to sessionStorage
-                    sessionStorage.setItem("searchable-json-data", JSON.stringify(this.#searchableJsonData));
+                    sessionStorage.setItem("searchable-json-data", JSON.stringify(this.#searchableData));
                 }
                 catch (error) {
                     console.log(`Sorry couldn't fetch the data:\nError-code: ${error.code}\nError-message: ${error.message}`);
@@ -70,31 +70,35 @@ class StaticSearch {
         // On search form "submit" event
         this.#form.addEventListener("submit", (event) => {
 
-            // prevent default submit behaviour.
+            // Prevent the default "submit" behaviour.
             event.preventDefault();
 
-            // remove any previously rendered <#result> components.
-            let child = document.querySelector(".static-search-result");
+            // Process to remove any previously rendered <.static-search-result> components.
+            let component = document.querySelector(".static-search-result");
 
-            if (child != null) {
-                this.#form.removeChild(child);
+            if (component != null) {
+                this.#form.removeChild(component); 
             }
 
+            
             // Process to search for matches:
 
             // Create a deep-clone of the searchable data.
-            let searchableDataClone = structuredClone(this.#searchableJsonData);
+            let searchableDataClone = structuredClone(this.#searchableData);
 
-            // Array of objects whose properties match the search query string.
+            // An array of objects whose properties match the search query string
             let matches = searchableDataClone.filter((object) => {
-                for (let property in object) {
+                    for (let property in object) {
 
-                    if (this.#stringMatching({ word: `${this.#input.value}`, string: object[property] })) {
-                        return true;
+                        if (this.#stringMatching({ 
+                            word: `${this.#input.value}`, 
+                            string: object[property] 
+                        })) {
+                            return true;
+                        }
                     }
-                }
-
-                return false;
+    
+                    return false;
             });
 
             if (this.#settings.highlightKeywords) {
@@ -113,15 +117,6 @@ class StaticSearch {
             // The component that will hold the returned search results
             let results = document.createElement("ul");
             results.setAttribute('class', 'static-search-result');
-
-            if (this.#settings.showStaticSearchLogo) {
-                // The StaticSearch logo that displays on the bottom of the search results
-                let logo = document.createElement('li');
-                logo.setAttribute('class', 'static-search-logo');
-                logo.innerHTML = `<p>Search provided by <a href="https://twitter.com/Eduardo__Uribe">static search</a></p>`;
-
-                results.append(logo);
-            }
 
             // If there are no search matches found:
             if (matches.length <= 0) {
@@ -144,7 +139,7 @@ class StaticSearch {
                 let content = matches.map((match) => {
 
                     let li = document.createElement("li");
-                    li.setAttribute("class", "result-item")
+                    li.setAttribute("class", "result-item");
                     li.innerHTML = this.#settings.searchResultsTemplate(match);
 
                     return li.outerHTML;
@@ -153,9 +148,9 @@ class StaticSearch {
 
                 results.innerHTML = content;
 
-                // Insert the static search logo?
                 if (this.#settings.showStaticSearchLogo) {
 
+                    // Insert the static search logo.
                     let logo = document.createElement('li');
                     logo.setAttribute('class', 'static-search-logo');
                     logo.innerHTML = `<p>Search provided by <a href="#">static search</a></p>`;
@@ -205,4 +200,6 @@ class StaticSearch {
             return `<mark>${match}</mark>`;
         });
     }
-};
+}
+
+export { StaticSearch as default };
