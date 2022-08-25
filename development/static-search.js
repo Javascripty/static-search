@@ -15,8 +15,8 @@ class StaticSearch {
     // Default search settings
     #defaults = {
         pathToTheSearchableData: undefined,
-        searchFormId: ".static-search-form",
-        searchFormInputId: ".static-search-query",
+        searchFormId: "#static-search-form",
+        searchFormInputId: "#static-search-query",
         searchResultsTemplate: undefined,
         noSearchResultsFoundTemplate: `<p class="no-results-found">...Sorry no search results found</p>`,
         showStaticSearchLogo: true,
@@ -74,7 +74,7 @@ class StaticSearch {
             event.preventDefault();
 
             // Process to remove any previously rendered <.static-search-result> components.
-            let component = document.querySelector(".static-search-result");
+            let component = document.querySelector("#static-search-results");
 
             if (component != null) {
                 this.#form.removeChild(component); 
@@ -116,7 +116,7 @@ class StaticSearch {
 
             // The component that will hold the returned search results
             let results = document.createElement("ul");
-            results.setAttribute('class', 'static-search-result');
+            results.setAttribute('id', 'static-search-results');
 
             // If there are no search matches found:
             if (matches.length <= 0) {
@@ -152,7 +152,7 @@ class StaticSearch {
 
                     // Insert the static search logo.
                     let logo = document.createElement('li');
-                    logo.setAttribute('class', 'static-search-logo');
+                    logo.setAttribute('id', 'static-search-logo');
                     logo.innerHTML = `<p>Search provided by <a href="#">static search</a></p>`;
 
                     // Insert the logo after the last child of the results element.
