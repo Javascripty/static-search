@@ -62,7 +62,7 @@
     font-weight: 600;
 }
 
-.no-results-found {
+#no-results-found {
     text-indent: 1rem;
 }
 
@@ -71,15 +71,6 @@
     padding: 1.25rem 0;
     border-bottom: solid 3px black;
 }
-
-/* .result-item-noresults {
-    width: 90%;
-    margin: 0 auto;
-    padding: 1rem 0;
-    box-sizing: border-box;
-    line-height: 1.65rem;
-    background: #E9E9E9;
-} */
 
 .result-item-title {
     display: block;
