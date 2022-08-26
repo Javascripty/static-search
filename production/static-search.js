@@ -14,10 +14,10 @@ class StaticSearch {
 
     // Default static-search settings
     #defaults = {
-        pathToTheSearchableData: undefined,
+        urlToTheSearchableData: undefined,
         searchFormId: "#static-search-form",
         searchFormInputId: "#static-search-query",
-        searchResultsTemplate: undefined,
+        templateForSearchResultsItem: undefined,
         noSearchResultsFoundMessage: "Sorry no search results found",
         showStaticSearchLogo: true,
         highlightKeywords: true,
@@ -45,7 +45,7 @@ class StaticSearch {
                 // If not: send a fetch request for the searchable data, and also store in sessionStorage
                 try {
                     // Fetch the searchable data
-                    let response = await fetch(this.#settings.pathToTheSearchableData);
+                    let response = await fetch(this.#settings.urlToTheSearchableData);
 
                     // If the fetch failed, throw an error
                     if (!response.ok) {
@@ -142,7 +142,7 @@ class StaticSearch {
 
                     let li = document.createElement("li");
                     li.setAttribute("class", "result-item");
-                    li.innerHTML = this.#settings.searchResultsTemplate(match);
+                    li.innerHTML = this.#settings.templateForSearchResultsItem(match);
 
                     return li.outerHTML;
 
